@@ -1,0 +1,25 @@
+{
+  "videos": [
+    {
+      "id": 1,
+      "titulo": "Partida comentada — Ariadna vs PanOceanía",
+      "youtubeId": "dQw4w9WgXcQ",
+      "fecha": "2025-03-10",
+      "descripcion": "Partida de demostración entre dos de las facciones más populares. Comentada por los organizadores de Vector Sur."
+    },
+    {
+      "id": 2,
+      "titulo": "Tutorial N5 — Primeros pasos en Infinity",
+      "youtubeId": "dQw4w9WgXcQ",
+      "fecha": "2025-02-20",
+      "descripcion": "Guía introductoria para nuevos jugadores. Aprende las mecánicas básicas de la 5ª edición de Infinity en menos de 30 minutos."
+    },
+    {
+      "id": 3,
+      "titulo": "Resumen Torneo Sevilla 2025",
+      "youtubeId": "dQw4w9WgXcQ",
+      "fecha": "2025-03-16",
+      "descripcion": "Resumen de las mejores jugadas del primer torneo oficial de Vector Sur celebrado en Sevilla."
+    }
+  ]
+}

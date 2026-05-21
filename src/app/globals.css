@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neon: #00ff41;
+  --neon-dim: #00cc33;
+  --dark: #050508;
+  --card: #0d0d14;
+  --surface: #111118;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--dark);
+  color: #e0e0e0;
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Circuit board background */
+.circuit-bg {
+  background-color: var(--dark);
+  background-image:
+    linear-gradient(rgba(0, 255, 65, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(0, 255, 65, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.015) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+  background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+}
+
+/* Neon text glow */
+.neon-text {
+  color: var(--neon);
+  text-shadow:
+    0 0 7px rgba(0, 255, 65, 0.9),
+    0 0 14px rgba(0, 255, 65, 0.6),
+    0 0 28px rgba(0, 255, 65, 0.3);
+}
+
+/* Neon border glow */
+.neon-border {
+  border-color: var(--neon);
+  box-shadow:
+    0 0 5px rgba(0, 255, 65, 0.5),
+    0 0 15px rgba(0, 255, 65, 0.2),
+    inset 0 0 5px rgba(0, 255, 65, 0.05);
+}
+
+/* Card with neon accent */
+.card-neon {
+  background-color: var(--card);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.card-neon:hover {
+  border-color: rgba(0, 255, 65, 0.6);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.15);
+}
+
+/* Scanline overlay */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Neon button */
+.btn-neon {
+  background: transparent;
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  font-family: var(--font-orbitron), monospace;
+  letter-spacing: 0.1em;
+  transition: all 0.25s ease;
+}
+
+.btn-neon:hover {
+  background: var(--neon);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+}
+
+/* Glowing divider line */
+.neon-line {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 65, 0.5) 20%,
+    var(--neon) 50%,
+    rgba(0, 255, 65, 0.5) 80%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+}
+
+/* Section heading with V-accent */
+.section-heading {
+  position: relative;
+  display: inline-block;
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 40%;
+  height: 2px;
+  background: var(--neon);
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.7);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 65, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 65, 0.6);
+}
+
+/* Input neon style */
+.input-neon {
+  background: rgba(0, 255, 65, 0.03);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  color: #e0e0e0;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-neon:focus {
+  outline: none;
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.1), 0 0 10px rgba(0, 255, 65, 0.1);
+}
+
+.input-neon::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}

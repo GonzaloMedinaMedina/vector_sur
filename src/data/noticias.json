@@ -1,0 +1,24 @@
+{
+  "noticias": [
+    {
+      "id": 1,
+      "slug": "primer-torneo-vector-sur-sevilla-2025",
+      "titulo": "Primer Torneo Vector Sur — Sevilla 2025",
+      "fecha": "2025-03-15",
+      "sede": "Sevilla",
+      "imagen": "/noticias/torneo-sevilla-2025.jpg",
+      "resumen": "Gran éxito en el primer torneo oficial de la comunidad Vector Sur. 16 jugadores se dieron cita en Sevilla para disputar una jornada épica de Infinity.",
+      "contenido": "El pasado 15 de marzo celebramos el primer torneo oficial de Vector Sur en Sevilla. 16 jugadores de todas nuestras sedes se reunieron para disputar 3 rondas de Infinity N5 en un ambiente fantástico.\n\nEl evento contó con mesas de escenografía propia y los resultados fueron los siguientes:\n\n🥇 1.º puesto: Nombre del jugador (Facción)\n🥈 2.º puesto: Nombre del jugador (Facción)\n🥉 3.º puesto: Nombre del jugador (Facción)\n\nEl próximo torneo será en Málaga. ¡Estad atentos a las noticias!"
+    },
+    {
+      "id": 2,
+      "slug": "liga-de-invierno-2025",
+      "titulo": "Liga de Invierno 2025 — ¡Inscripciones abiertas!",
+      "fecha": "2025-02-01",
+      "sede": "Todas las sedes",
+      "imagen": "",
+      "resumen": "Abrimos inscripciones para la Liga de Invierno 2025. Compite desde tu sede local y clasifícate para la gran final presencial en primavera.",
+      "contenido": "Ya está en marcha la Liga de Invierno 2025 de Vector Sur. Este año el formato será de liga descentralizada: cada sede organizará sus propias rondas y los mejores jugadores se clasificarán para la gran final presencial.\n\nFechas clave:\n- Fase de grupos: Febrero — Marzo 2025\n- Final presencial: Abril 2025\n\nPara inscribirse, contacta con el responsable de tu sede o escríbenos a través del formulario de contacto."
+    }
+  ]
+}

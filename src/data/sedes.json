@@ -1,0 +1,44 @@
+{
+  "sedes": [
+    {
+      "slug": "la-linea",
+      "ciudad": "La Línea",
+      "nombre": "Vector Sur — La Línea de la Concepción",
+      "descripcion": "Nuestra sede en La Línea de la Concepción, punto de encuentro para los jugadores del Campo de Gibraltar. Partidas regulares, torneos locales y un ambiente inmejorable para iniciarse en Infinity.",
+      "direccion": "Por confirmar — La Línea de la Concepción, Cádiz",
+      "horario": "Viernes de 17:00 a 22:00 · Sábados de 10:00 a 20:00",
+      "contacto": "vectorsur.lalinea@email.com",
+      "mapaEmbed": ""
+    },
+    {
+      "slug": "malaga",
+      "ciudad": "Málaga",
+      "nombre": "Vector Sur — Málaga",
+      "descripcion": "La sede malagueña de Vector Sur acoge a jugadores de toda la Costa del Sol. Disponemos de mesas de juego permanentes, escenografía propia y organizamos torneos trimestrales.",
+      "direccion": "Por confirmar — Málaga",
+      "horario": "Jueves de 17:00 a 22:00 · Sábados de 10:00 a 20:00",
+      "contacto": "vectorsur.malaga@email.com",
+      "mapaEmbed": ""
+    },
+    {
+      "slug": "sevilla",
+      "ciudad": "Sevilla",
+      "nombre": "Vector Sur — Sevilla",
+      "descripcion": "Capital y corazón organizativo de Vector Sur. La sede sevillana es la más activa de la comunidad, con partidas semanales, pintura y ligas regulares a lo largo de todo el año.",
+      "direccion": "Por confirmar — Sevilla",
+      "horario": "Miércoles de 17:00 a 22:00 · Sábados de 10:00 a 20:00",
+      "contacto": "vectorsur.sevilla@email.com",
+      "mapaEmbed": ""
+    },
+    {
+      "slug": "melilla",
+      "ciudad": "Melilla",
+      "nombre": "Vector Sur — Melilla",
+      "descripcion": "Nuestra sede en la Ciudad Autónoma de Melilla. Un punto de referencia para los jugadores del norte de África y la costa mediterránea, con conexión directa con la comunidad peninsular.",
+      "direccion": "Por confirmar — Melilla",
+      "horario": "Viernes de 17:00 a 22:00 · Sábados de 10:00 a 18:00",
+      "contacto": "vectorsur.melilla@email.com",
+      "mapaEmbed": ""
+    }
+  ]
+}
