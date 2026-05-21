@@ -95,22 +95,20 @@ export default function Navbar() {
               </button>
 
               {sedesOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-52 bg-card border border-neon/30 shadow-neon-sm">
-                  {/* Triangle arrow */}
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-2 overflow-hidden">
-                    <div className="w-3 h-3 bg-card border-l border-t border-neon/30 rotate-45 translate-y-1 mx-auto" />
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-52 pt-2">
+                  <div className="bg-card border border-neon/30 shadow-neon-sm">
+                    {sedesData.sedes.map((sede, i) => (
+                      <Link
+                        key={sede.slug}
+                        href={`/sedes/${sede.slug}`}
+                        className={`block px-4 py-3 font-orbitron text-xs tracking-wider text-gray-300 hover:text-neon hover:bg-neon/5 transition-colors ${
+                          i < sedesData.sedes.length - 1 ? 'border-b border-neon/10' : ''
+                        }`}
+                      >
+                        ▸ {sede.ciudad}
+                      </Link>
+                    ))}
                   </div>
-                  {sedesData.sedes.map((sede, i) => (
-                    <Link
-                      key={sede.slug}
-                      href={`/sedes/${sede.slug}`}
-                      className={`block px-4 py-3 font-orbitron text-xs tracking-wider text-gray-300 hover:text-neon hover:bg-neon/5 transition-colors ${
-                        i < sedesData.sedes.length - 1 ? 'border-b border-neon/10' : ''
-                      }`}
-                    >
-                      ▸ {sede.ciudad}
-                    </Link>
-                  ))}
                 </div>
               )}
             </div>
