@@ -31,6 +31,7 @@ export default function Navbar() {
     { href: '/', label: 'Inicio' },
     { href: '/noticias', label: 'Noticias' },
     { href: '/videos', label: 'Videos' },
+    { href: '/clasificacion', label: 'Clasificación' },
   ]
 
   const isActive = (href: string) =>

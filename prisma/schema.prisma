@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Noticia {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  titulo    String
+  fecha     DateTime
+  sede      String?
+  resumen   String
+  contenido String
+  imagen    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Video {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  descripcion String?
+  youtubeId   String
+  fecha       DateTime
+  sede        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Jugador {
+  id              Int                  @id @default(autoincrement())
+  nombre          String
+  sede            String?
+  clasificaciones ClasificacionEntry[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+}
+
+model Torneo {
+  id                Int                  @id @default(autoincrement())
+  nombre            String
+  sede              String
+  anio              Int
+  fecha             DateTime
+  puntosPorPosicion String               @default("{\"1\":10,\"2\":8,\"3\":6,\"4\":5,\"5\":4,\"6\":3,\"7\":2,\"default\":1}")
+  clasificaciones   ClasificacionEntry[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+}
+
+model ClasificacionEntry {
+  id        Int      @id @default(autoincrement())
+  jugador   Jugador  @relation(fields: [jugadorId], references: [id], onDelete: Cascade)
+  jugadorId Int
+  torneo    Torneo   @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+  torneoId  Int
+  posicion  Int
+  puntos    Int
+  createdAt DateTime @default(now())
+
+  @@unique([jugadorId, torneoId])
+}
