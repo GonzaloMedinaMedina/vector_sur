@@ -1,11 +1,13 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { noticias } from '@/db/schema'
+import { desc } from 'drizzle-orm'
 import Link from 'next/link'
 import DeleteButton from '@/components/admin/DeleteButton'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminNoticias() {
-  const noticias = await prisma.noticia.findMany({ orderBy: { fecha: 'desc' } })
+  const result = await db.select().from(noticias).orderBy(desc(noticias.fecha))
 
   return (
     <div>
@@ -19,11 +21,11 @@ export default async function AdminNoticias() {
         </Link>
       </div>
 
-      {noticias.length === 0 ? (
+      {result.length === 0 ? (
         <p className="text-gray-600 font-orbitron text-xs tracking-widest text-center py-16">Sin noticias</p>
       ) : (
         <div className="space-y-3">
-          {noticias.map(n => (
+          {result.map(n => (
             <div key={n.id} className="card-neon p-5 flex items-center justify-between gap-4 flex-wrap">
               <div className="flex-1 min-w-0">
                 <p className="font-orbitron text-xs text-neon/50 tracking-wider mb-1">

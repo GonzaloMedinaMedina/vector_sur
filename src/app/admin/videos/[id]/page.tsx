@@ -1,4 +1,6 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { videos } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import VideoForm from '@/components/admin/VideoForm'
 import Link from 'next/link'
@@ -6,7 +8,7 @@ import Link from 'next/link'
 type Props = { params: { id: string } }
 
 export default async function EditarVideo({ params }: Props) {
-  const video = await prisma.video.findUnique({ where: { id: Number(params.id) } })
+  const [video] = await db.select().from(videos).where(eq(videos.id, Number(params.id)))
   if (!video) notFound()
 
   const initial = {

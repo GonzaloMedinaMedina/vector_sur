@@ -1,13 +1,15 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { noticias } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 
 export const dynamic = 'force-dynamic'
 
 type Props = { params: { slug: string } }
 
 export async function generateMetadata({ params }: Props) {
-  const noticia = await prisma.noticia.findUnique({ where: { slug: params.slug } })
+  const [noticia] = await db.select().from(noticias).where(eq(noticias.slug, params.slug))
   if (!noticia) return {}
   return {
     title: `${noticia.titulo} — Vector Sur`,
@@ -16,7 +18,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function NoticiaPage({ params }: Props) {
-  const noticia = await prisma.noticia.findUnique({ where: { slug: params.slug } })
+  const [noticia] = await db.select().from(noticias).where(eq(noticias.slug, params.slug))
   if (!noticia) notFound()
 
   const parrafos = noticia.contenido.split('\n\n').filter(Boolean)

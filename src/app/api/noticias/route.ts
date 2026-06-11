@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { noticias } from '@/db/schema'
+import { eq, desc } from 'drizzle-orm'
 
 function slugify(text: string) {
   return text
@@ -15,10 +17,8 @@ function slugify(text: string) {
 }
 
 export async function GET() {
-  const noticias = await prisma.noticia.findMany({
-    orderBy: { fecha: 'desc' },
-  })
-  return NextResponse.json(noticias)
+  const result = await db.select().from(noticias).orderBy(desc(noticias.fecha))
+  return NextResponse.json(result)
 }
 
 export async function POST(req: NextRequest) {
@@ -35,20 +35,20 @@ export async function POST(req: NextRequest) {
   const baseSlug = slugify(titulo)
   let slug = baseSlug
   let count = 1
-  while (await prisma.noticia.findUnique({ where: { slug } })) {
+  while (true) {
+    const [existing] = await db.select({ id: noticias.id }).from(noticias).where(eq(noticias.slug, slug))
+    if (!existing) break
     slug = `${baseSlug}-${count++}`
   }
 
-  const noticia = await prisma.noticia.create({
-    data: {
-      slug,
-      titulo,
-      fecha: new Date(fecha),
-      sede: sede || null,
-      resumen,
-      contenido,
-      imagen: imagen || null,
-    },
-  })
+  const [noticia] = await db.insert(noticias).values({
+    slug,
+    titulo,
+    fecha: new Date(fecha),
+    sede: sede || null,
+    resumen,
+    contenido,
+    imagen: imagen || null,
+  }).returning()
   return NextResponse.json(noticia, { status: 201 })
 }

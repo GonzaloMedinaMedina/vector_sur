@@ -11,7 +11,13 @@
       "Bash(Out-Null)",
       "Bash(Write-Output \"done\")",
       "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Development\\\\vector-sur\\\\src\\\\components\\\\admin\")",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(npm uninstall *)",
+      "Bash(Remove-Item \"c:\\\\Development\\\\vector-sur\\\\prisma.config.ts\" -Force)",
+      "Bash(Remove-Item \"c:\\\\Development\\\\vector-sur\\\\src\\\\lib\\\\prisma.ts\" -Force)",
+      "Bash(Remove-Item \"c:\\\\Development\\\\vector-sur\\\\src\\\\generated\" -Recurse -Force)"
     ],
     "additionalDirectories": [
       "c:\\Development\\vector-sur\\src\\app\\api\\auth"

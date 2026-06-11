@@ -1,5 +1,7 @@
 import Link from 'next/link'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { noticias } from '@/db/schema'
+import { desc } from 'drizzle-orm'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,7 +11,7 @@ export const metadata = {
 }
 
 export default async function NoticiasPage() {
-  const noticias = await prisma.noticia.findMany({ orderBy: { fecha: 'desc' } })
+  const result = await db.select().from(noticias).orderBy(desc(noticias.fecha))
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -26,13 +28,13 @@ export default async function NoticiasPage() {
 
       <hr className="neon-line mb-14" />
 
-      {noticias.length === 0 ? (
+      {result.length === 0 ? (
         <div className="text-center py-24 text-gray-600 font-orbitron text-sm tracking-widest">
           — Sin noticias por el momento —
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {noticias.map(noticia => (
+          {result.map(noticia => (
             <Link
               key={noticia.id}
               href={`/noticias/${noticia.slug}`}

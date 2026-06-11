@@ -1,27 +1,25 @@
-import { PrismaLibSql } from '@prisma/adapter-libsql'
-import { PrismaClient } from '../src/generated/prisma/client'
+import { drizzle } from 'drizzle-orm/libsql'
+import { createClient } from '@libsql/client'
+import { users, noticias, videos, torneos } from './src/db/schema'
+import { eq, and } from 'drizzle-orm'
 import { hash } from 'bcryptjs'
 
-const adapter = new PrismaLibSql({ url: 'file:./dev.db' })
-const prisma = new PrismaClient({ adapter } as any)
+const client = createClient({ url: 'file:./dev.db' })
+const db = drizzle(client)
 
 async function main() {
   // Usuario admin
   const adminPassword = await hash('admin1234', 12)
-  await prisma.user.upsert({
-    where: { email: 'admin@vectorsur.com' },
-    update: {},
-    create: {
-      email: 'admin@vectorsur.com',
-      password: adminPassword,
-      name: 'Admin',
-      role: 'admin',
-    },
-  })
+  await db.insert(users).values({
+    email: 'admin@vectorsur.com',
+    password: adminPassword,
+    name: 'Admin',
+    role: 'admin',
+  }).onConflictDoNothing({ target: users.email })
   console.log('✓ Usuario admin creado: admin@vectorsur.com / admin1234')
 
-  // Noticias desde JSON
-  const noticias = [
+  // Noticias
+  const noticiasData = [
     {
       slug: 'primer-torneo-vector-sur-sevilla-2025',
       titulo: 'Primer Torneo Vector Sur — Sevilla 2025',
@@ -42,17 +40,13 @@ async function main() {
     },
   ]
 
-  for (const n of noticias) {
-    await prisma.noticia.upsert({
-      where: { slug: n.slug },
-      update: {},
-      create: n,
-    })
+  for (const n of noticiasData) {
+    await db.insert(noticias).values(n).onConflictDoNothing({ target: noticias.slug })
   }
   console.log('✓ Noticias importadas')
 
   // Videos
-  const videos = [
+  const videosData = [
     {
       titulo: 'Partida comentada — Ariadna vs PanOceanía',
       youtubeId: 'dQw4w9WgXcQ',
@@ -73,10 +67,11 @@ async function main() {
     },
   ]
 
-  for (const v of videos) {
-    const exists = await prisma.video.findFirst({ where: { youtubeId: v.youtubeId, titulo: v.titulo } })
-    if (!exists) {
-      await prisma.video.create({ data: v })
+  for (const v of videosData) {
+    const [existing] = await db.select({ id: videos.id }).from(videos)
+      .where(and(eq(videos.youtubeId, v.youtubeId), eq(videos.titulo, v.titulo)))
+    if (!existing) {
+      await db.insert(videos).values(v)
     }
   }
   console.log('✓ Videos importados')
@@ -90,9 +85,9 @@ async function main() {
   ]
 
   for (const t of torneos2025) {
-    const exists = await prisma.torneo.findFirst({ where: { nombre: t.nombre } })
-    if (!exists) {
-      await prisma.torneo.create({ data: t })
+    const [existing] = await db.select({ id: torneos.id }).from(torneos).where(eq(torneos.nombre, t.nombre))
+    if (!existing) {
+      await db.insert(torneos).values(t)
     }
   }
   console.log('✓ Torneos 2025 creados (Málaga, La Línea, Sevilla)')
@@ -100,6 +95,4 @@ async function main() {
   console.log('\n🎮 Seed completado. Accede al admin en /admin\n   Email: admin@vectorsur.com\n   Contraseña: admin1234')
 }
 
-main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect())
+main().catch(console.error)

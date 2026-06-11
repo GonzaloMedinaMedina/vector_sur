@@ -1,4 +1,6 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { noticias } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import NoticiaForm from '@/components/admin/NoticiaForm'
 import Link from 'next/link'
@@ -6,7 +8,7 @@ import Link from 'next/link'
 type Props = { params: { id: string } }
 
 export default async function EditarNoticia({ params }: Props) {
-  const noticia = await prisma.noticia.findUnique({ where: { id: Number(params.id) } })
+  const [noticia] = await db.select().from(noticias).where(eq(noticias.id, Number(params.id)))
   if (!noticia) notFound()
 
   const initial = {

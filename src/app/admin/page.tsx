@@ -1,19 +1,21 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { noticias, videos, torneos, jugadores } from '@/db/schema'
+import { count } from 'drizzle-orm'
 import Link from 'next/link'
 
 export default async function AdminDashboard() {
-  const [noticias, videos, torneos, jugadores] = await Promise.all([
-    prisma.noticia.count(),
-    prisma.video.count(),
-    prisma.torneo.count(),
-    prisma.jugador.count(),
+  const [noticiaRow, videoRow, torneoRow, jugadorRow] = await Promise.all([
+    db.select({ value: count() }).from(noticias),
+    db.select({ value: count() }).from(videos),
+    db.select({ value: count() }).from(torneos),
+    db.select({ value: count() }).from(jugadores),
   ])
 
   const cards = [
-    { href: '/admin/noticias', label: 'Noticias', count: noticias, action: 'Nueva noticia' },
-    { href: '/admin/videos', label: 'Videos', count: videos, action: 'Nuevo video' },
-    { href: '/admin/clasificacion', label: 'Torneos', count: torneos, action: 'Gestionar' },
-    { href: '/admin/clasificacion', label: 'Jugadores', count: jugadores, action: 'Gestionar' },
+    { href: '/admin/noticias', label: 'Noticias', count: noticiaRow[0].value, action: 'Nueva noticia' },
+    { href: '/admin/videos', label: 'Videos', count: videoRow[0].value, action: 'Nuevo video' },
+    { href: '/admin/clasificacion', label: 'Torneos', count: torneoRow[0].value, action: 'Gestionar' },
+    { href: '/admin/clasificacion', label: 'Jugadores', count: jugadorRow[0].value, action: 'Gestionar' },
   ]
 
   return (

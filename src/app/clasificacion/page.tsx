@@ -1,4 +1,6 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { torneos } from '@/db/schema'
+import { desc, asc } from 'drizzle-orm'
 import ClasificacionClient from './ClasificacionClient'
 
 export const dynamic = 'force-dynamic'
@@ -9,23 +11,22 @@ export const metadata = {
 }
 
 export default async function ClasificacionPage() {
-  const torneosRaw = await prisma.torneo.findMany({
-    orderBy: [{ anio: 'desc' }, { fecha: 'asc' }],
-    include: {
+  const torneosRaw = await db.query.torneos.findMany({
+    orderBy: [desc(torneos.anio), asc(torneos.fecha)],
+    with: {
       clasificaciones: {
-        include: { jugador: true },
-        orderBy: { posicion: 'asc' },
+        with: { jugador: true },
+        orderBy: (c, { asc }) => [asc(c.posicion)],
       },
     },
   })
 
-  // Serializar Date → string para poder pasar a componentes cliente
-  const torneos = torneosRaw.map(t => ({
+  const torneosData = torneosRaw.map(t => ({
     ...t,
     fecha: t.fecha.toISOString().split('T')[0],
   }))
 
-  const años = [...new Set(torneos.map(t => t.anio))].sort((a, b) => b - a)
+  const años = [...new Set(torneosData.map(t => t.anio))].sort((a, b) => b - a)
 
-  return <ClasificacionClient torneos={torneos} años={años} />
+  return <ClasificacionClient torneos={torneosData} años={años} />
 }

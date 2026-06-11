@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { videos } from '@/db/schema'
+import { desc } from 'drizzle-orm'
 
 export async function GET() {
-  const videos = await prisma.video.findMany({ orderBy: { fecha: 'desc' } })
-  return NextResponse.json(videos)
+  const result = await db.select().from(videos).orderBy(desc(videos.fecha))
+  return NextResponse.json(result)
 }
 
 export async function POST(req: NextRequest) {
@@ -19,14 +21,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 })
   }
 
-  const video = await prisma.video.create({
-    data: {
-      titulo,
-      descripcion: descripcion || null,
-      youtubeId,
-      fecha: new Date(fecha),
-      sede: sede || null,
-    },
-  })
+  const [video] = await db.insert(videos).values({
+    titulo,
+    descripcion: descripcion || null,
+    youtubeId,
+    fecha: new Date(fecha),
+    sede: sede || null,
+  }).returning()
   return NextResponse.json(video, { status: 201 })
 }

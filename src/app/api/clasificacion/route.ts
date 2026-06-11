@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { clasificacionEntries, torneos } from '@/db/schema'
+import { eq, asc, inArray } from 'drizzle-orm'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -9,26 +11,30 @@ export async function GET(req: NextRequest) {
   const anio = searchParams.get('anio')
 
   if (torneoId) {
-    const entries = await prisma.clasificacionEntry.findMany({
-      where: { torneoId: Number(torneoId) },
-      include: { jugador: true, torneo: true },
-      orderBy: { posicion: 'asc' },
+    const entries = await db.query.clasificacionEntries.findMany({
+      where: eq(clasificacionEntries.torneoId, Number(torneoId)),
+      with: { jugador: true, torneo: true },
+      orderBy: (c, { asc }) => [asc(c.posicion)],
     })
     return NextResponse.json(entries)
   }
 
   if (anio) {
-    const entries = await prisma.clasificacionEntry.findMany({
-      where: { torneo: { anio: Number(anio) } },
-      include: { jugador: true, torneo: true },
-      orderBy: { posicion: 'asc' },
+    const anioTorneos = await db.select({ id: torneos.id }).from(torneos).where(eq(torneos.anio, Number(anio)))
+    const ids = anioTorneos.map(t => t.id)
+    if (ids.length === 0) return NextResponse.json([])
+
+    const entries = await db.query.clasificacionEntries.findMany({
+      where: inArray(clasificacionEntries.torneoId, ids),
+      with: { jugador: true, torneo: true },
+      orderBy: (c, { asc }) => [asc(c.posicion)],
     })
     return NextResponse.json(entries)
   }
 
-  const entries = await prisma.clasificacionEntry.findMany({
-    include: { jugador: true, torneo: true },
-    orderBy: { posicion: 'asc' },
+  const entries = await db.query.clasificacionEntries.findMany({
+    with: { jugador: true, torneo: true },
+    orderBy: (c, { asc }) => [asc(c.posicion)],
   })
   return NextResponse.json(entries)
 }
@@ -44,21 +50,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 })
   }
 
-  const torneo = await prisma.torneo.findUnique({ where: { id: Number(torneoId) } })
+  const [torneo] = await db.select().from(torneos).where(eq(torneos.id, Number(torneoId)))
   if (!torneo) return NextResponse.json({ error: 'Torneo no encontrado' }, { status: 404 })
 
   const pts = JSON.parse(torneo.puntosPorPosicion) as Record<string, number>
   const puntos = pts[String(posicion)] ?? pts['default'] ?? 0
 
-  const entry = await prisma.clasificacionEntry.upsert({
-    where: { jugadorId_torneoId: { jugadorId: Number(jugadorId), torneoId: Number(torneoId) } },
-    update: { posicion: Number(posicion), puntos },
-    create: {
-      jugadorId: Number(jugadorId),
-      torneoId: Number(torneoId),
-      posicion: Number(posicion),
-      puntos,
-    },
-  })
+  const [entry] = await db.insert(clasificacionEntries)
+    .values({ jugadorId: Number(jugadorId), torneoId: Number(torneoId), posicion: Number(posicion), puntos })
+    .onConflictDoUpdate({
+      target: [clasificacionEntries.jugadorId, clasificacionEntries.torneoId],
+      set: { posicion: Number(posicion), puntos },
+    })
+    .returning()
   return NextResponse.json(entry, { status: 201 })
 }

@@ -1,11 +1,13 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { videos } from '@/db/schema'
+import { desc } from 'drizzle-orm'
 import Link from 'next/link'
 import DeleteButton from '@/components/admin/DeleteButton'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminVideos() {
-  const videos = await prisma.video.findMany({ orderBy: { fecha: 'desc' } })
+  const result = await db.select().from(videos).orderBy(desc(videos.fecha))
 
   return (
     <div>
@@ -19,11 +21,11 @@ export default async function AdminVideos() {
         </Link>
       </div>
 
-      {videos.length === 0 ? (
+      {result.length === 0 ? (
         <p className="text-gray-600 font-orbitron text-xs tracking-widest text-center py-16">Sin videos</p>
       ) : (
         <div className="space-y-3">
-          {videos.map(v => (
+          {result.map(v => (
             <div key={v.id} className="card-neon p-5 flex items-center justify-between gap-4 flex-wrap">
               <div className="flex-1 min-w-0">
                 <p className="font-orbitron text-xs text-neon/50 tracking-wider mb-1">

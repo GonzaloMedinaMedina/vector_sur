@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { jugadores } from '@/db/schema'
+import { asc } from 'drizzle-orm'
 
 export async function GET() {
-  const jugadores = await prisma.jugador.findMany({ orderBy: { nombre: 'asc' } })
-  return NextResponse.json(jugadores)
+  const result = await db.select().from(jugadores).orderBy(asc(jugadores.nombre))
+  return NextResponse.json(result)
 }
 
 export async function POST(req: NextRequest) {
@@ -17,6 +19,6 @@ export async function POST(req: NextRequest) {
 
   if (!nombre) return NextResponse.json({ error: 'Falta el nombre' }, { status: 400 })
 
-  const jugador = await prisma.jugador.create({ data: { nombre, sede: sede || null } })
+  const [jugador] = await db.insert(jugadores).values({ nombre, sede: sede || null }).returning()
   return NextResponse.json(jugador, { status: 201 })
 }

@@ -1,27 +1,28 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { torneos, jugadores } from '@/db/schema'
+import { desc, asc } from 'drizzle-orm'
 import ClasificacionAdmin from './ClasificacionAdmin'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminClasificacion() {
-  const [torneosRaw, jugadores] = await Promise.all([
-    prisma.torneo.findMany({
-      orderBy: [{ anio: 'desc' }, { fecha: 'asc' }],
-      include: {
+  const [torneosRaw, jugadoresResult] = await Promise.all([
+    db.query.torneos.findMany({
+      orderBy: [desc(torneos.anio), asc(torneos.fecha)],
+      with: {
         clasificaciones: {
-          include: { jugador: true },
-          orderBy: { posicion: 'asc' },
+          with: { jugador: true },
+          orderBy: (c, { asc }) => [asc(c.posicion)],
         },
       },
     }),
-    prisma.jugador.findMany({ orderBy: { nombre: 'asc' } }),
+    db.select().from(jugadores).orderBy(asc(jugadores.nombre)),
   ])
 
-  // Serializar Date → string para poder pasar a componentes cliente
-  const torneos = torneosRaw.map(t => ({
+  const torneosData = torneosRaw.map(t => ({
     ...t,
     fecha: t.fecha.toISOString().split('T')[0],
   }))
 
-  return <ClasificacionAdmin torneos={torneos} jugadores={jugadores} />
+  return <ClasificacionAdmin torneos={torneosData} jugadores={jugadoresResult} />
 }
