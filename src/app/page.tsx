@@ -1,9 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import noticias from '@/data/noticias.json'
+import { noticias } from '@/db/schema'
+import { db } from '@/db'
+import { desc } from 'drizzle-orm'
 
-export default function HomePage() {
-  const ultimasNoticias = noticias.noticias.slice(0, 3)
+export default async function HomePage() {
+    const ultimasNoticias = await db.select()
+      .from(noticias)
+      .orderBy(desc(noticias.fecha))
+      .limit(3)
 
   return (
     <>
@@ -127,7 +132,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ultimasNoticias.map(noticia => (
+            {ultimasNoticias.length > 0 ? ultimasNoticias.map(noticia => (
               <Link
                 key={noticia.id}
                 href={`/noticias/${noticia.slug}`}
@@ -150,7 +155,7 @@ export default function HomePage() {
                   Leer más →
                 </span>
               </Link>
-            ))}
+            )) : `No hay noticias nuevas`}
           </div>
         </div>
       </section>
