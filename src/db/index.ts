@@ -7,8 +7,8 @@ const globalForDb = globalThis as unknown as { db: DB }
 
 function createDb(): DB {
   const client = createClient({
-    url: process.env.DATABASE_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN,
+    url: process.env.DB_VECTOR_SUR_TURSO_DATABASE_URL!,
+    authToken: process.env.DB_VECTOR_SUR_TURSO_AUTH_TOKEN,
   })
   return drizzle(client, { schema })
 }
