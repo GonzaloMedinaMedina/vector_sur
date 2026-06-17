@@ -58,10 +58,10 @@ export async function POST(req: NextRequest) {
 
   const [entry] = await db.insert(clasificacionEntries)
     .values({ jugadorId: Number(jugadorId), torneoId: Number(torneoId), posicion: Number(posicion), puntos })
-    .onConflictDoUpdate({
-      target: [clasificacionEntries.jugadorId, clasificacionEntries.torneoId],
-      set: { posicion: Number(posicion), puntos },
-    })
+    // .onConflictDoUpdate({
+    //   target: [clasificacionEntries.jugadorId, clasificacionEntries.torneoId],
+    //   set: { posicion: Number(posicion), puntos },
+    // })
     .returning()
   return NextResponse.json(entry, { status: 201 })
 }
